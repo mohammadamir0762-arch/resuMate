@@ -1,0 +1,32 @@
+@startuml
+left to right direction
+
+actor "User" as User
+
+rectangle "ResuMate Offline Resume Analyzer" {
+  usecase "Upload Resume PDF" as UC1
+  usecase "Paste Job Description" as UC2
+  usecase "Extract Resume Text" as UC3
+  usecase "Analyze Skills" as UC4
+  usecase "Generate Match Score" as UC5
+  usecase "Show Missing Keywords" as UC6
+  usecase "View X-Ray Resume Format" as UC7
+  usecase "Get Rewrite Suggestions" as UC8
+  usecase "Use App Offline" as UC9
+}
+
+User --> UC1
+User --> UC2
+User --> UC5
+User --> UC7
+User --> UC8
+User --> UC9
+
+UC1 ..> UC3 : <<include>>
+UC3 ..> UC4 : <<include>>
+UC2 ..> UC4 : <<include>>
+UC4 ..> UC5 : <<include>>
+UC4 ..> UC6 : <<include>>
+UC8 ..> UC4 : <<include>>
+
+@enduml
