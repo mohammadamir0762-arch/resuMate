@@ -67,6 +67,7 @@ button:disabled {
 
 .input-panel,
 .results-panel {
+  min-width: 0;
   border: 1px solid #d9ded2;
   border-radius: 8px;
   background: #ffffff;
@@ -1202,10 +1203,11 @@ h3 {
     padding: 14px;
   }
 
+  /* minmax(0, 1fr): a wide child (like the tab row) scrolls instead of widening the page. */
   .workspace,
   .report-grid,
   .generator-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .input-panel {
