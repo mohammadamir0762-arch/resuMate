@@ -5,7 +5,9 @@ ResuMate checks how well a resume matches a job post. You upload a PDF resume an
 - a **match score** from 0 to 100,
 - the **skills you have** and the **keywords you are missing**,
 - an **X-Ray view** of how hiring software (an ATS) reads your PDF,
-- **rewrite suggestions** you can copy into your resume.
+- **rewrite suggestions** you can copy into your resume,
+- **biggest wins**: how many points each missing skill would add,
+- an **updated resume**, generated on the spot with the changes you pick, ready to download as PDF.
 
 Everything runs in your browser. The resume is never uploaded. After the first visit, the app also works with no internet.
 
@@ -40,6 +42,7 @@ These match the use case diagram in `usecase.puml`.
 | Generate Match Score | 70% skills (weighted, so core skills count more than soft skills) and 30% other keywords from the job post. 60 or more is a strong match. |
 | Show Missing Keywords | Missing skills (required first, nice-to-have marked), and separately, other words the job post repeats. |
 | Get Rewrite Suggestions | Adds missing skills to your Skills line, replaces weak openers ("Responsible for…", "Worked on…") with action verbs, asks for numbers on bullets without any, and gives example lines for missing skills. |
+| Generate Updated Resume (new) | Tick the suggestions to apply. The resume is rebuilt in a clean one-column layout that hiring software reads well, with a live preview. Edit the text, then **Download PDF** (browser print), **Download .txt** or **Copy**. Unfilled [brackets] are highlighted and warned about. |
 | Use App Offline | A service worker caches the whole app. Past reports are saved in the browser (newest 20) and can be opened again. |
 
 ## How it works
@@ -70,6 +73,7 @@ src/
     XRayView.jsx          page map, reading order, zoom, block highlight
     ReportPanel.jsx       score, skills, missing keywords, suggestions
     SavedReports.jsx      list of past reports
+    ResumeGenerator.jsx   updated resume: pick changes, edit, preview, download
   parser/
     TextExtractor.js      interface: parse(), supports()
     PdfParserWorker.js    TextExtractor that runs the PDF worker
@@ -82,6 +86,7 @@ src/
     SkillExtractor.js     finds dictionary skills in text
     MatchEngine.js        score and missing keywords
     RewriteSuggester.js   rewrite suggestions
+    ResumeBuilder.js      rebuilds the resume with the picked suggestions
     skillDictionary.js    the skill list
   storage/OfflineStore.js saves reports in localStorage
   lib/                    small text and date helpers
@@ -92,7 +97,7 @@ scripts/make-sample.js    writes the sample PDF and job post
 
 ## Tests
 
-`npm test` runs 47 tests with Node's built-in test runner. No extra packages are needed. They cover:
+`npm test` runs 48 tests with Node's built-in test runner. No extra packages are needed. They cover:
 
 - layout grouping (rows, split words, spaced-out headings, two-column pages),
 - the domain classes (sections, headings, JSON save and load),

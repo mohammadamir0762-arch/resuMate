@@ -276,11 +276,12 @@ export class RewriteSuggester extends Analyzer {
 
 // Joins rows that belong to one bullet. Many PDFs draw bullets as shapes, so a
 // new bullet and a wrapped row can look the same; see isWrappedRow for the rules.
-function mergeWrappedLines(blocks) {
+// `area` is the section's blocks, used to find its right edge; it defaults to `blocks`.
+export function mergeWrappedLines(blocks, area = blocks) {
   if (blocks.length === 0) return [];
 
-  const left = Math.min(...blocks.map((block) => block.x));
-  const right = Math.max(...blocks.map((block) => block.x + block.width));
+  const left = Math.min(...area.map((block) => block.x));
+  const right = Math.max(...area.map((block) => block.x + block.width));
   const wrapEdge = right - (right - left) * 0.15;
   const lines = [];
 
@@ -301,6 +302,7 @@ function mergeWrappedLines(blocks) {
         lastLine: block.line,
         right: block.x + block.width,
         heading: block.isHeading(),
+        bullet: startsWithBullet,
       });
     }
   }
@@ -314,6 +316,7 @@ function isWrappedRow(previous, block, text, wrapEdge) {
   if (previous.lastLine === block.line || previous.heading || block.isHeading()) return false;
   if (block.x < previous.firstX - 3) return false;
   if (/^[a-z]/.test(text)) return true;
+  if (/^[A-Z][A-Za-z &/]{1,30}:\s/.test(text)) return false; // "Core Concepts: ..." starts a new line
 
   return (
     Math.abs(block.x - previous.firstX) <= 3 &&

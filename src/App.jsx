@@ -3,6 +3,7 @@ import { MatchEngine } from './analysis/MatchEngine.js';
 import { RewriteSuggester } from './analysis/RewriteSuggester.js';
 import { SkillExtractor } from './analysis/SkillExtractor.js';
 import ReportPanel from './components/ReportPanel.jsx';
+import ResumeGenerator from './components/ResumeGenerator.jsx';
 import SavedReports from './components/SavedReports.jsx';
 import UploadPanel from './components/UploadPanel.jsx';
 import XRayView from './components/XRayView.jsx';
@@ -160,6 +161,7 @@ function App() {
 
   const tabs = [
     { id: 'report', label: 'Match report', enabled: Boolean(report) || hasText },
+    { id: 'resume', label: 'Updated resume', enabled: Boolean(report && resume) },
     { id: 'xray', label: 'X-Ray', enabled: Boolean(resume) },
     { id: 'text', label: 'Text', enabled: Boolean(resume) },
   ];
@@ -284,13 +286,21 @@ function App() {
 
               {visibleTab === 'report' &&
                 (report ? (
-                  <ReportPanel report={report} isStale={isStale} />
+                  <ReportPanel
+                    report={report}
+                    isStale={isStale}
+                    onCreateResume={resume ? () => setActiveTab('resume') : null}
+                  />
                 ) : (
                   <div className="empty-state">
                     <h3>No report yet</h3>
                     <p>Paste a job description on the left, then press Analyze match.</p>
                   </div>
                 ))}
+
+              {visibleTab === 'resume' && report && resume && (
+                <ResumeGenerator key={report.id} resume={resume} report={report} />
+              )}
 
               {visibleTab === 'xray' && resume && <XRayView resume={resume} skills={resumeSkills} />}
 

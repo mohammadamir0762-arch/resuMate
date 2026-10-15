@@ -241,3 +241,28 @@ test('MatchEngine ranks missing skills by the points they would add', () => {
   assert.equal(report.biggestWins[0].points, wins[0].points);
   assert.equal(report.scoreWithAllSkills, 100);
 });
+
+test('ResumeBuilder rebuilds the resume and applies the picked suggestions', async () => {
+  const { ResumeBuilder } = await import('../src/analysis/ResumeBuilder.js');
+  const { parseResumeText, countPlaceholders } = await import('../src/lib/resumeText.js');
+  const resume = resumeFromLines(SAMPLE_RESUME_LINES);
+  const { report } = analyze(resume, SAMPLE_JOB_DESCRIPTION);
+  const builder = new ResumeBuilder(resume);
+
+  const plain = builder.toText();
+  assert.match(plain, /^Asha Verma\n/);
+  assert.match(plain, /\nEXPERIENCE\nSoftware Engineer, Brightpath Labs \| Jan 2022 - Present\n• Responsible for building/);
+
+  const picked = report.suggestions.filter((suggestion) => ['strong-verb', 'add-skill', 'new-line'].includes(suggestion.type));
+  const updated = builder.toText(picked.slice(0, 3).concat(picked.filter((item) => item.type === 'new-line').slice(0, 1)));
+  assert.match(updated, /• Built reusable UI components for the customer dashboard/);
+  assert.doesNotMatch(updated, /Responsible for building/);
+  assert.match(updated, /JavaScript, React, HTML, CSS, Node\.js, Git, Figma, TypeScript/);
+  assert.ok(countPlaceholders(updated) > 0, 'a new-line idea brings [placeholders]');
+
+  const parsed = parseResumeText(updated);
+  assert.equal(parsed.name, 'Asha Verma');
+  assert.equal(parsed.contact.length, 1);
+  assert.ok(parsed.blocks.some((block) => block.type === 'heading' && block.text === 'EXPERIENCE'));
+  assert.ok(parsed.blocks.some((block) => block.type === 'bullet' && block.text.startsWith('Built reusable')));
+});

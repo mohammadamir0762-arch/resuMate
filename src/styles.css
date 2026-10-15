@@ -1012,13 +1012,199 @@ h3 {
   font-size: 0.88rem;
 }
 
+/* Updated resume */
+
+.section-heading-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.section-heading-row h3 {
+  margin: 0;
+}
+
+.primary-button.small {
+  flex: none;
+  padding: 6px 12px;
+  font-size: 0.88rem;
+}
+
+.generator {
+  display: grid;
+  gap: 18px;
+}
+
+.generator .section-note,
+.generator .notice {
+  margin: 0;
+}
+
+.change-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.change-list label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.change-list label:hover {
+  background: var(--surface-soft);
+}
+
+.change-list input {
+  margin-top: 4px;
+}
+
+.change-list .tag {
+  flex: none;
+}
+
+.change-text {
+  font-size: 0.9rem;
+}
+
+.generator-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.generator-actions .primary-button {
+  flex: none;
+}
+
+.generator-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.resume-editor,
+.resume-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.resume-editor > span,
+.resume-preview > span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.resume-editor textarea {
+  flex: 1;
+  min-height: 620px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.resume-paper {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 32px 30px;
+  overflow-wrap: anywhere;
+  box-shadow: 0 1px 4px rgb(23 32 24 / 12%);
+  color: #111;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.resume-paper h1 {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.resume-paper .resume-contact {
+  margin: 0;
+  color: #444;
+  text-align: center;
+}
+
+.resume-paper h2 {
+  margin: 14px 0 6px;
+  border-bottom: 1px solid #999;
+  padding-bottom: 2px;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+}
+
+.resume-paper p {
+  margin: 2px 0;
+}
+
+.resume-paper ul {
+  margin: 2px 0 6px;
+  padding-left: 18px;
+}
+
+.resume-paper li {
+  margin-bottom: 2px;
+}
+
+.resume-paper mark {
+  border-radius: 3px;
+  padding: 0 2px;
+  background: var(--skill);
+}
+
+.print-resume {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 0.6in;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .app-shell {
+    display: none !important;
+  }
+
+  .print-resume {
+    display: block;
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+    font-size: 10.5pt;
+  }
+}
+
 @media (max-width: 980px) {
   .app-shell {
     padding: 14px;
   }
 
   .workspace,
-  .report-grid {
+  .report-grid,
+  .generator-grid {
     grid-template-columns: 1fr;
   }
 

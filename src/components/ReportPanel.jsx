@@ -1,18 +1,11 @@
 import { useState } from 'react';
 import { formatDate } from '../lib/format.js';
+import { SUGGESTION_LABELS } from '../lib/suggestionLabels.js';
 
 const LEVEL_LABELS = { strong: 'Strong', fair: 'Fair', weak: 'Weak' };
 
-const SUGGESTION_LABELS = {
-  'add-skill': 'Add skills',
-  'strong-verb': 'Stronger verb',
-  'add-metric': 'Add a number',
-  'new-line': 'New line idea',
-  structure: 'Structure',
-  'job-title': 'Job title',
-};
 
-function ReportPanel({ report, isStale }) {
+function ReportPanel({ report, isStale, onCreateResume }) {
   const level = report.getLevel();
   const { breakdown } = report;
   const missingSkillNames = new Set(report.missingSkills.map((skill) => skill.name));
@@ -86,7 +79,14 @@ function ReportPanel({ report, isStale }) {
       )}
 
       <section className="report-section">
-        <h3>Rewrite suggestions ({report.suggestions.length})</h3>
+        <div className="section-heading-row">
+          <h3>Rewrite suggestions ({report.suggestions.length})</h3>
+          {onCreateResume && report.suggestions.length > 0 && (
+            <button type="button" className="primary-button small" onClick={onCreateResume}>
+              Create updated resume
+            </button>
+          )}
+        </div>
         <p className="section-note">
           Only add things that are true. Replace the [brackets] with your real details.
         </p>
