@@ -1,92 +1,46 @@
 import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+import * as pdfjsWorker from 'pdfjs-dist/build/pdf.worker.mjs';
+import { buildPageLayout } from '../parser/layout.js';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+// We are already off the main thread, so let pdf.js run its parser right here
+// instead of starting a nested worker. This also keeps everything in one bundle for offline use.
+globalThis.pdfjsWorker = pdfjsWorker;
 
 self.onmessage = async (event) => {
   try {
     const { fileBuffer } = event.data;
-    const pdf = await pdfjsLib.getDocument({ data: fileBuffer }).promise;
+    const loadingTask = pdfjsLib.getDocument({
+      data: fileBuffer,
+      verbosity: pdfjsLib.VerbosityLevel.ERRORS,
+    });
+    const pdf = await loadingTask.promise;
     const pages = [];
 
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
       const page = await pdf.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 1 });
       const textContent = await page.getTextContent();
-      const blocks = buildLayoutBlocks(textContent.items, pageNumber);
+      const { blocks, columnSplit } = buildPageLayout(textContent.items, pageNumber);
 
-      pages.push({
-        pageNumber,
-        blocks,
-        text: blocks.map((block) => block.text).join('\n'),
-      });
+      pages.push({ pageNumber, width: viewport.width, height: viewport.height, blocks, columnSplit });
+
+      page.cleanup();
+      self.postMessage({ type: 'progress', payload: { page: pageNumber, total: pdf.numPages } });
     }
 
-    self.postMessage({
-      type: 'parsed',
-      payload: {
-        pages,
-        text: pages.map((page) => page.text).join('\n\n'),
-      },
-    });
+    await loadingTask.destroy();
+    self.postMessage({ type: 'parsed', payload: { pages } });
   } catch (error) {
-    self.postMessage({
-      type: 'error',
-      error: error instanceof Error ? error.message : 'Unknown PDF parsing error.',
-    });
+    self.postMessage({ type: 'error', error: friendlyError(error) });
   }
 };
 
-function buildLayoutBlocks(items, pageNumber) {
-  const positionedItems = items
-    .map((item) => ({
-      text: item.str.trim(),
-      x: item.transform[4],
-      y: item.transform[5],
-      height: item.height,
-      width: item.width,
-    }))
-    .filter((item) => item.text.length > 0)
-    .sort((left, right) => {
-      const yDistance = Math.abs(right.y - left.y);
-      if (yDistance > 8) return right.y - left.y;
-      return left.x - right.x;
-    });
-
-  const rows = [];
-
-  for (const item of positionedItems) {
-    const row = rows.find((candidate) => Math.abs(candidate.y - item.y) <= 6);
-
-    if (row) {
-      row.items.push(item);
-      row.y = (row.y + item.y) / 2;
-    } else {
-      rows.push({ y: item.y, items: [item] });
-    }
+function friendlyError(error) {
+  if (error?.name === 'PasswordException') {
+    return 'This PDF is password protected. Remove the password and try again.';
   }
-
-  return rows
-    .sort((left, right) => right.y - left.y)
-    .map((row, rowIndex) => {
-      const rowItems = row.items.sort((left, right) => left.x - right.x);
-      const text = rowItems
-        .map((item, index) => {
-          if (index === 0) return item.text;
-
-          const previous = rowItems[index - 1];
-          const gap = item.x - (previous.x + previous.width);
-          return `${gap > 14 ? '  ' : ' '}${item.text}`;
-        })
-        .join('')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      return {
-        id: `p${pageNumber}-b${rowIndex + 1}`,
-        text,
-        x: rowItems[0]?.x ?? 0,
-        y: row.y,
-      };
-    })
-    .filter((block) => block.text.length > 0);
+  if (error?.name === 'InvalidPDFException') {
+    return 'This file is not a valid PDF. Try exporting it again.';
+  }
+  return error instanceof Error ? error.message : 'Unknown PDF parsing error.';
 }
