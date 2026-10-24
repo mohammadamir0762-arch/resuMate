@@ -1,0 +1,51 @@
+Job Title: Full Stack Developer Intern
+
+Position: Full Stack Developer Intern
+Job Type: Internship
+Work Mode: Remote/Hybrid/On-site
+Duration: 3–6 Months
+
+Job Description
+
+We are looking for a motivated Full Stack Developer Intern to join our development team. The ideal candidate should have a basic understanding of frontend and backend development, databases, and REST APIs, along with a willingness to learn and work on real-world projects.
+
+Key Responsibilities
+
+* Develop and maintain responsive web applications.
+* Build user-friendly interfaces using HTML, CSS, JavaScript, and React.js.
+* Develop backend services and REST APIs using Node.js and Express.js.
+* Work with databases such as MongoDB or MySQL.
+* Integrate third-party APIs and external services.
+* Debug applications, fix issues, and optimize performance.
+* Collaborate with team members using Git and GitHub.
+* Participate in code reviews and contribute to project development.
+
+Required Skills
+
+* Basic knowledge of HTML, CSS, and JavaScript.
+* Familiarity with React.js.
+* Basic understanding of Node.js and Express.js.
+* Knowledge of MongoDB or MySQL.
+* Understanding of REST APIs and JSON.
+* Familiarity with Git and GitHub.
+* Good problem-solving and communication skills.
+
+Preferred Qualifications
+
+* Pursuing a B.Tech, B.E., BCA, MCA, or a related degree.
+* Personal projects or previous internship experience in web development.
+* Understanding of responsive design and authentication.
+* Willingness to learn new technologies and work in a team.
+
+What We Offer
+
+* Hands-on experience with real-world projects.
+* Opportunity to work with experienced developers.
+* Practical exposure to full-stack development.
+* Certificate of completion and potential full-time opportunities based on performance.
+
+How to Apply
+
+Interested candidates can share their updated resume along with links to their GitHub profile or portfolio.
+
+Apply Now!

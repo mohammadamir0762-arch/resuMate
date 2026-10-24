@@ -11,13 +11,18 @@ ResuMate checks how well a resume matches a job post. You upload a PDF resume an
 
 Everything runs in your browser. The resume is never uploaded. After the first visit, the app also works with no internet.
 
-Repository: `26-27-fall-se-lab-projects-mohammadamir0762-arch`
+**Live app:** https://mohammadamir0762-arch.github.io/resuMate/
+**Source code:** https://github.com/mohammadamir0762-arch/resuMate
 
-## Run it
+## Run it locally
 
-You need Node.js 20.19+ or 22.12+.
+You need **Node.js 20.19+ or 22.12+** and npm. No database, server or accounts are needed.
+
+**Environment variables:** none. ResuMate has no backend and no API keys, so there is no `.env` file to set up.
 
 ```bash
+git clone https://github.com/mohammadamir0762-arch/resuMate.git
+cd resuMate
 npm install
 npm run dev        # start the app at http://localhost:5173
 npm test           # run the tests
@@ -26,7 +31,11 @@ npm run preview    # serve the build (this is where offline mode works)
 npm run sample     # write samples/sample-resume.pdf and samples/sample-job.txt
 ```
 
-To try the app quickly, run `npm run sample`, upload `samples/sample-resume.pdf`, and paste the text from `samples/sample-job.txt`.
+To try the app quickly, upload `demo/demo-resume.pdf` (a made-up student) and paste the text from `demo/demo-job.txt`. You can also run `npm run sample` for a smaller sample.
+
+## Deploy
+
+`npm run build` makes a static site in `dist/`. Upload that folder to any static host (GitHub Pages, Netlify, Vercel). The live app above is the `dist/` folder on the `gh-pages` branch, served by GitHub Pages.
 
 ## Features (use cases)
 

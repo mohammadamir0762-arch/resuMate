@@ -5,6 +5,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  // Relative paths, so the build works at any address (a site root or a GitHub Pages sub-folder).
+  base: './',
   plugins: [react(), offlineServiceWorker()],
   worker: {
     format: 'es',
